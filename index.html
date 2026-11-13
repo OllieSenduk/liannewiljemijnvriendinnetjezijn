@@ -119,6 +119,14 @@
   .collage .polaroid:nth-child(1) { transform: rotate(-8deg) translateY(8px); }
   .collage .polaroid:nth-child(2) { transform: rotate(3deg); z-index: 2; }
   .collage .polaroid:nth-child(3) { transform: rotate(9deg) translateY(10px); }
+  .otters { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 4px; margin: 14px 0 6px; }
+  .otters .polaroid { margin: 0; animation: bounce 1.6s ease-in-out infinite; }
+  .otters .polaroid img { width: min(190px, 33vw); aspect-ratio: 1; }
+  .otters .polaroid:nth-child(3) img { object-position: 15% center; }
+  .otters .polaroid:nth-child(1) { --r: -6deg; }
+  .otters .polaroid:nth-child(2) { --r: 5deg; animation-delay: .3s; }
+  .otters .polaroid:nth-child(3) { --r: -2deg; animation-delay: .6s; }
+  @keyframes bounce { 0%,100% { transform: rotate(var(--r)) translateY(0); } 50% { transform: rotate(var(--r)) translateY(-10px); } }
   .signature { font-family: "Caveat", cursive; font-size: 32px; color: var(--ink); margin-top: 6px; }
   .heartbeat { display: inline-block; animation: beat 1s infinite; }
   @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
@@ -246,16 +254,13 @@
 
   <section class="screen" data-screen="yes">
     <div class="card">
-      <div class="big-emoji heartbeat">💞</div>
-      <h1>JAAAA!!!</h1>
-      <p id="yesText">Ik wist het. Je hebt me net heel erg blij gemaakt.</p>
-      <div class="collage">
-        <figure class="polaroid"><img src="img/wandeling.jpg" alt=""></figure>
-        <figure class="polaroid"><img src="img/thuis.jpg" alt=""></figure>
-        <figure class="polaroid"><img src="img/picknick.jpg" alt=""></figure>
+      <div class="big-emoji heartbeat">🦦</div>
+      <h1>JAAAAA!!!</h1>
+      <div class="otters">
+        <figure class="polaroid"><img src="img/otter1.jpg" alt="Blije otter met een steentje"></figure>
+        <figure class="polaroid"><img src="img/otter2.jpg" alt="Lachende otter"></figure>
+        <figure class="polaroid"><img src="img/otter3.jpg" alt="Verliefde otter met hartjes"></figure>
       </div>
-      <p>Officieel vriendje en vriendinnetje vanaf vandaag:<br><strong id="today" style="color:var(--ink)"></strong></p>
-      <div class="signature">Kus, Ollie <span class="heartbeat">❤️</span></div>
       <div style="margin-top:16px"><button class="btn-option" id="moreConfetti">Meer confetti! 🎉</button></div>
     </div>
   </section>
@@ -466,15 +471,10 @@
   function sayYes() {
     runaway = false;
     noBtn.classList.remove('runaway');
-    const tries = noCount + dodges;
-    document.getElementById('today').textContent = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
-    if (noCount >= stages.length) document.getElementById('yesText').textContent = 'Na ' + tries + ' keer nee proberen... toch ja! Ik wist het 😎';
-    else if (noCount > 0) document.getElementById('yesText').textContent = 'Even twijfelen mag. Je maakt me heel erg blij.';
-    else document.getElementById('yesText').textContent = 'Ik wist het. Je hebt me net heel erg blij gemaakt.';
     show(screens.findIndex(s => s.dataset.screen === 'yes'));
     confetti(260);
     setTimeout(() => confetti(160), 900);
-    heartRain = 3000;
+    heartRain = 6000;
   }
   yesBtn.addEventListener('click', sayYes);
 
@@ -497,10 +497,10 @@
   const heartsEl = document.getElementById('hearts');
   const heartChars = ['💗', '💕', '💖', '❤️', '🌸', '💞'];
   let heartRain = 0;
-  function spawnHeart() {
+  function spawnHeart(char) {
     const h = document.createElement('div');
     h.className = 'float-heart';
-    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.textContent = char || heartChars[Math.floor(Math.random() * heartChars.length)];
     h.style.left = Math.random() * 100 + 'vw';
     h.style.fontSize = (14 + Math.random() * 22) + 'px';
     const dur = 7 + Math.random() * 7;
@@ -510,7 +510,7 @@
   }
   setInterval(() => {
     spawnHeart();
-    if (heartRain > 0) { spawnHeart(); spawnHeart(); heartRain -= 600; }
+    if (heartRain > 0) { spawnHeart('🦦'); spawnHeart('🦦'); spawnHeart(); heartRain -= 600; }
   }, 600);
   for (let i = 0; i < 6; i++) setTimeout(spawnHeart, i * 300);
 
@@ -544,7 +544,7 @@
         x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .45,
         vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4,
         size: 6 + Math.random() * 7, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .3,
-        color: colors[Math.floor(Math.random() * colors.length)], heart: Math.random() < .25, life: 0,
+        color: colors[Math.floor(Math.random() * colors.length)], heart: Math.random() < .3, otter: Math.random() < .5, life: 0,
       });
     }
     if (!animating) { animating = true; requestAnimationFrame(tick); }
@@ -554,7 +554,7 @@
     pieces.forEach(p => {
       p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
       ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-      if (p.heart) { ctx.font = (p.size * 2) + 'px serif'; ctx.fillText('💖', 0, 0); }
+      if (p.heart) { ctx.font = (p.size * 2) + 'px serif'; ctx.fillText(p.otter ? '🦦' : '💖', 0, 0); }
       else { ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); }
       ctx.restore();
     });
