@@ -23,9 +23,11 @@
   body {
     font-family: "Fredoka", system-ui, sans-serif;
     color: var(--ink);
-    background: radial-gradient(circle at 20% 10%, #ffd6e4 0%, transparent 45%),
+    background-attachment: fixed;
+    background-image: radial-gradient(circle at 20% 10%, #ffd6e4 0%, transparent 45%),
                 radial-gradient(circle at 85% 90%, #ffe0cc 0%, transparent 45%),
-                var(--cream);
+                radial-gradient(circle at 50% 50%, var(--cream), var(--cream));
+    background-color: var(--cream);
     overflow-x: hidden;
     min-height: 100vh;
   }
@@ -119,7 +121,8 @@
   .heartbeat { display: inline-block; animation: beat 1s infinite; }
   @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
 
-  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+  #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+  @media (max-height: 760px) { .polaroid img { width: min(190px, 52vw); } .card { padding: 20px 18px; } .big-emoji { font-size: 48px; } }
 
   .progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 14px; }
   .progress span { width: 8px; height: 8px; border-radius: 50%; background: #f5cbd8; }
@@ -328,7 +331,7 @@
   const askCard = document.getElementById('askCard');
 
   const stages = [
-    { emoji: '🥺', title: 'Weet je het zeker?', sub: 'Denk er nog even goed over na...', no: 'Ja, zeker' },
+    { emoji: '🥺', title: 'Weet je het zeker?', sub: 'Denk er nog even goed over na...', no: 'Heel zeker' },
     { emoji: '😳', title: 'Echt heel heel zeker?', sub: 'Ik vraag het nog één keertje.', no: 'Echt zeker' },
     { emoji: '🍟', title: 'Denk aan de patatjes in de zon...', sub: 'En de wandelingen. En mijn grapjes.', no: 'Nog steeds nee' },
     { emoji: '🥹', title: 'Ik heb deze hele website voor je gemaakt!', sub: 'Met foto\'s en alles.', no: 'Nee...' },
