@@ -151,7 +151,7 @@
 
   <section class="screen" data-screen="q1">
     <div class="card">
-      <div class="progress"><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="progress"><span class="on"></span><span></span><span></span><span></span><span></span></div>
       <div class="step">Vraag 1</div>
       <h2>Wat is het lekkerste eten ter wereld?</h2>
       <figure class="polaroid">
@@ -161,7 +161,7 @@
       <div class="options">
         <button class="btn-option" data-react="Echt een druif 🍇">Hele lekkere dingen zoals chocolade, maar dan zonder alles wat het lekker maakt, zoals suiker</button>
         <button class="btn-option" data-react="Goeie keuze 🫘">Bonen met rijst</button>
-        <button class="btn-option" data-react="Oké nu ga ik blozen ☺️">Alles zolang jij erbij bent</button>
+        <button class="btn-option" data-react="">Alles zolang jij erbij bent</button>
       </div>
       <div class="reaction"></div>
     </div>
@@ -169,7 +169,7 @@
 
   <section class="screen" data-screen="q2">
     <div class="card">
-      <div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
+      <div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
       <div class="step">Vraag 2</div>
       <h2>Hoe vind je wandelen met mij?</h2>
       <figure class="polaroid right">
@@ -187,7 +187,7 @@
 
   <section class="screen" data-screen="q3">
     <div class="card">
-      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
       <div class="step">Vraag 3</div>
       <h2>Hoe grappig vind je mij?</h2>
       <p>Schuif maar. Eerlijk zijn!</p>
@@ -201,13 +201,28 @@
     </div>
   </section>
 
+  <section class="screen" data-screen="q4hp">
+    <div class="card">
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <div class="step">Vraag 4</div>
+      <div class="big-emoji">🦡</div>
+      <h2>Wat past er het beste bij Hufflepuff?</h2>
+      <div class="options">
+        <button class="btn-option" data-react="Ik denk dat je Ravenclaw bedoelde, ok we gaan door">Gryffindor 🦁</button>
+        <button class="btn-option" data-react="">Ravenclaw 🦅</button>
+        <button class="btn-option" data-react="Ik denk dat je Ravenclaw bedoelde, ok we gaan door">Slytherin 🐍</button>
+      </div>
+      <div class="reaction"></div>
+    </div>
+  </section>
+
   <section class="screen" data-screen="q4">
     <div class="card">
-      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
       <div class="step">Laatste vraag</div>
       <div class="big-emoji">🫣</div>
       <h2>Oké. Nu even serieus.</h2>
-      <p>Ik ben een beetje zenuwachtig.<br>Ben je er klaar voor?</p>
+      <p>Ben je er klaar voor?</p>
       <div><button class="btn-main" data-next>Ja, vraag het maar</button></div>
     </div>
   </section>
@@ -286,7 +301,7 @@
       btn.style.color = '#fff';
       reaction.textContent = btn.dataset.react;
       burstHearts(btn);
-      pendingNext = setTimeout(() => { reset(); next(); }, 1500);
+      pendingNext = setTimeout(() => { reset(); next(); }, Math.max(1500, btn.dataset.react.length * 55));
     }));
     function reset() {
       opts.forEach(o => { o.disabled = false; o.style.background = ''; o.style.color = ''; });
@@ -307,7 +322,7 @@
   ];
   function updateSlider() {
     sliderValue.textContent = slider.value + '%';
-    if (+slider.value >= 90) sliderReaction.textContent = 'Klopt helemaal 🤣';
+    if (+slider.value >= 90) sliderReaction.textContent = '';
     else if (+slider.value >= 70) sliderReaction.textContent = 'Kan nog iets hoger hoor...';
     else sliderReaction.textContent = '';
   }
