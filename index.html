@@ -67,7 +67,7 @@
     transform: rotate(-3deg); margin: 4px 0 18px; transition: transform .3s;
   }
   .polaroid:hover { transform: rotate(0deg) scale(1.03); }
-  .polaroid img { display: block; width: min(250px, 62vw); aspect-ratio: 4/5; object-fit: cover; border-radius: 3px; }
+  .polaroid img { display: block; width: min(250px, 62vw); height: auto; border-radius: 3px; }
   .polaroid.right { transform: rotate(3deg); }
   .polaroid figcaption { font-family: "Caveat", cursive; font-size: 24px; color: var(--ink); margin-top: 6px; }
 
@@ -93,12 +93,12 @@
   .slider-labels { display: flex; justify-content: space-between; font-size: 15px; color: var(--muted); }
   .slider-value { font-size: 44px; font-weight: 700; color: var(--pink); margin: 6px 0 2px; }
 
-  .question-photos { position: relative; height: 210px; margin: 0 auto 12px; width: 280px; }
-  .question-photos .polaroid { position: absolute; top: 0; margin: 0; }
-  .question-photos .polaroid img { width: 140px; }
-  .question-photos .p1 { left: 0; transform: rotate(-9deg); }
-  .question-photos .p2 { left: 70px; top: 14px; transform: rotate(2deg); z-index: 2; }
-  .question-photos .p3 { left: 140px; transform: rotate(10deg); }
+  .question-photos { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 auto 12px; }
+  .question-photos .polaroid { margin: 0; padding: 6px 6px 8px; }
+  .question-photos .polaroid img { width: min(130px, 21vw); }
+  .question-photos .p1 { transform: rotate(-5deg); }
+  .question-photos .p2 { transform: rotate(2deg); }
+  .question-photos .p3 { transform: rotate(5deg); }
 
   .answer-row { display: flex; gap: 14px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 8px; min-height: 80px; }
   #yesBtn { background: var(--pink); color: #fff; box-shadow: 0 10px 24px -8px var(--pink); transition: font-size .3s, padding .3s, transform .15s; }
@@ -119,10 +119,9 @@
   .collage .polaroid:nth-child(1) { transform: rotate(-8deg) translateY(8px); }
   .collage .polaroid:nth-child(2) { transform: rotate(3deg); z-index: 2; }
   .collage .polaroid:nth-child(3) { transform: rotate(9deg) translateY(10px); }
-  .otters { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 4px; margin: 14px 0 6px; }
+  .otters { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 4px; margin: 14px 0 6px; }
   .otters .polaroid { margin: 0; animation: bounce 1.6s ease-in-out infinite; }
-  .otters .polaroid img { width: min(190px, 33vw); aspect-ratio: 1; }
-  .otters .polaroid:nth-child(3) img { object-position: 15% center; }
+  .otters .polaroid img { width: min(190px, 33vw); }
   .otters .polaroid:nth-child(1) { --r: -6deg; }
   .otters .polaroid:nth-child(2) { --r: 5deg; animation-delay: .3s; }
   .otters .polaroid:nth-child(3) { --r: -2deg; animation-delay: .6s; }
