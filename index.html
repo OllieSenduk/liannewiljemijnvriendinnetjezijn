@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Hoi Lianne 💌</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff5c8a;
+    --pink-dark: #e23e6e;
+    --rose: #ffe3ec;
+    --cream: #fff7f2;
+    --ink: #4a2333;
+    --muted: #8a5a6c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Fredoka", system-ui, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(circle at 20% 10%, #ffd6e4 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, #ffe0cc 0%, transparent 45%),
+                var(--cream);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  #hearts { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .float-heart { position: absolute; bottom: -40px; opacity: .55; animation: floatUp linear forwards; }
+  @keyframes floatUp { to { transform: translateY(-115vh) rotate(25deg); opacity: 0; } }
+
+  main {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .screen { display: none; width: 100%; max-width: 520px; text-align: center; animation: pop .5s cubic-bezier(.2,1.4,.4,1); }
+  .screen.active { display: block; }
+  @keyframes pop { from { opacity: 0; transform: scale(.9) translateY(14px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: #fff;
+    border-radius: 28px;
+    padding: 28px 22px 26px;
+    box-shadow: 0 20px 50px -20px rgba(226, 62, 110, .35), 0 2px 0 rgba(0,0,0,.02);
+  }
+  h1 { font-size: clamp(28px, 7vw, 40px); margin: 6px 0 10px; line-height: 1.1; }
+  h2 { font-size: clamp(22px, 5.5vw, 30px); margin: 4px 0 8px; line-height: 1.2; }
+  p { font-size: 18px; line-height: 1.5; color: var(--muted); margin: 0 0 18px; }
+  .big-emoji { font-size: 64px; line-height: 1; display: inline-block; animation: wiggle 2.2s ease-in-out infinite; }
+  @keyframes wiggle { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg) scale(1.06); } }
+
+  .step { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--pink); font-weight: 600; }
+
+  .polaroid {
+    display: inline-block; background: #fff;
+    padding: 10px 10px 8px; border-radius: 6px;
+    box-shadow: 0 10px 30px -10px rgba(74, 35, 51, .4);
+    transform: rotate(-3deg); margin: 4px 0 18px; transition: transform .3s;
+  }
+  .polaroid:hover { transform: rotate(0deg) scale(1.03); }
+  .polaroid img { display: block; width: min(250px, 62vw); aspect-ratio: 4/5; object-fit: cover; border-radius: 3px; }
+  .polaroid.right { transform: rotate(3deg); }
+  .polaroid figcaption { font-family: "Caveat", cursive; font-size: 24px; color: var(--ink); margin-top: 6px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  button {
+    font-family: inherit; font-size: 18px; font-weight: 600;
+    border: 0; border-radius: 999px; cursor: pointer; padding: 14px 24px;
+    transition: transform .15s, background .2s, box-shadow .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active { transform: scale(.96); }
+  .btn-main { background: var(--pink); color: #fff; box-shadow: 0 8px 20px -8px var(--pink); }
+  .btn-main:hover { background: var(--pink-dark); transform: translateY(-2px); }
+  .btn-option { background: var(--rose); color: var(--ink); }
+  .btn-option:hover { background: #ffd0df; transform: translateY(-2px); }
+
+  .reaction { min-height: 28px; margin-top: 14px; font-family: "Caveat", cursive; font-size: 28px; color: var(--pink-dark); }
+
+  .slider-wrap { margin: 10px 4px 6px; }
+  input[type=range] { width: 100%; accent-color: var(--pink); height: 32px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 15px; color: var(--muted); }
+  .slider-value { font-size: 44px; font-weight: 700; color: var(--pink); margin: 6px 0 2px; }
+
+  .question-photos { position: relative; height: 210px; margin: 0 auto 12px; width: 280px; }
+  .question-photos .polaroid { position: absolute; top: 0; margin: 0; }
+  .question-photos .polaroid img { width: 140px; }
+  .question-photos .p1 { left: 0; transform: rotate(-9deg); }
+  .question-photos .p2 { left: 70px; top: 14px; transform: rotate(2deg); z-index: 2; }
+  .question-photos .p3 { left: 140px; transform: rotate(10deg); }
+
+  .answer-row { display: flex; gap: 14px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 8px; min-height: 80px; }
+  #yesBtn { background: var(--pink); color: #fff; box-shadow: 0 10px 24px -8px var(--pink); transition: font-size .3s, padding .3s, transform .15s; }
+  #yesBtn:hover { background: var(--pink-dark); }
+  #noBtn { background: #eee3e7; color: var(--muted); transition: font-size .3s, padding .3s, opacity .3s; }
+  #noBtn.runaway { position: fixed; z-index: 50; transition: left .25s ease-out, top .25s ease-out, font-size .3s, padding .3s; }
+
+  .shake { animation: shake .45s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); } 40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
+  }
+
+  .collage { display: flex; justify-content: center; margin: 10px 0 20px; flex-wrap: nowrap; }
+  .collage .polaroid { margin: 0 -14px; }
+  .collage .polaroid img { width: min(130px, 28vw); }
+  .collage .polaroid:nth-child(1) { transform: rotate(-8deg) translateY(8px); }
+  .collage .polaroid:nth-child(2) { transform: rotate(3deg); z-index: 2; }
+  .collage .polaroid:nth-child(3) { transform: rotate(9deg) translateY(10px); }
+  .signature { font-family: "Caveat", cursive; font-size: 32px; color: var(--ink); margin-top: 6px; }
+  .heartbeat { display: inline-block; animation: beat 1s infinite; }
+  @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
+
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+
+  .progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 14px; }
+  .progress span { width: 8px; height: 8px; border-radius: 50%; background: #f5cbd8; }
+  .progress span.on { background: var(--pink); width: 22px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="hearts"></div>
+<canvas id="confetti"></canvas>
+
+<main>
+  <section class="screen active" data-screen="intro">
+    <div class="card">
+      <div class="big-emoji">💌</div>
+      <h1>Hoi Lianne!</h1>
+      <p>Ik heb een paar vraagjes voor je.<br>Eerlijk antwoorden hè. Geen smoesjes.</p>
+      <figure class="polaroid">
+        <img src="img/thuis.jpg" alt="Lianne en Ollie thuis">
+        <figcaption>wij 🥰</figcaption>
+      </figure>
+      <div><button class="btn-main" data-next>Oké, ik ben er klaar voor</button></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="q1">
+    <div class="card">
+      <div class="progress"><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="step">Vraag 1</div>
+      <h2>Wat is het lekkerste eten ter wereld?</h2>
+      <figure class="polaroid">
+        <img src="img/picknick.jpg" alt="Picknick in de zon">
+        <figcaption>picknick in de tuin ☀️</figcaption>
+      </figure>
+      <div class="options">
+        <button class="btn-option" data-react="Goed antwoord. Ik haal de mayo 🍟">Patatjes in de zon 🍟</button>
+        <button class="btn-option" data-react="Gezond hoor. Ik respecteer het 🥒">Komkommer 🥒</button>
+        <button class="btn-option" data-react="Oké nu ga ik blozen ☺️">Alles, als jij erbij bent</button>
+      </div>
+      <div class="reaction"></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="q2">
+    <div class="card">
+      <div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
+      <div class="step">Vraag 2</div>
+      <h2>Hoe vind je wandelen met mij?</h2>
+      <figure class="polaroid right">
+        <img src="img/wandeling.jpg" alt="Wandeling in het park">
+        <figcaption>samen op pad 🌳</figcaption>
+      </figure>
+      <div class="options">
+        <button class="btn-option" data-react="Leuk is een begin 😌">Leuk</button>
+        <button class="btn-option" data-react="Heel leuk! Ik noteer het 📝">Heel leuk</button>
+        <button class="btn-option" data-react="Wist ik het toch 😎">Het allerleukste van de hele week</button>
+      </div>
+      <div class="reaction"></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="q3">
+    <div class="card">
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <div class="step">Vraag 3</div>
+      <h2>Hoe grappig vind je mij?</h2>
+      <p>Schuif maar. Eerlijk zijn!</p>
+      <div class="slider-value" id="sliderValue">50%</div>
+      <div class="slider-wrap">
+        <input type="range" id="funnySlider" min="0" max="100" value="50" aria-label="Hoe grappig vind je mij">
+        <div class="slider-labels"><span>niet 😐</span><span>superduper 🤣</span></div>
+      </div>
+      <div class="reaction" id="sliderReaction"></div>
+      <div style="margin-top:14px"><button class="btn-main" id="sliderNext">Volgende</button></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="q4">
+    <div class="card">
+      <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+      <div class="step">Laatste vraag</div>
+      <div class="big-emoji">🫣</div>
+      <h2>Oké. Nu even serieus.</h2>
+      <p>Ik ben een beetje zenuwachtig.<br>Ben je er klaar voor?</p>
+      <div><button class="btn-main" data-next>Ja, vraag het maar</button></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="ask">
+    <div class="card" id="askCard">
+      <div class="question-photos">
+        <figure class="polaroid p1"><img src="img/picknick.jpg" alt=""></figure>
+        <figure class="polaroid p2"><img src="img/thuis.jpg" alt=""></figure>
+        <figure class="polaroid p3"><img src="img/wandeling.jpg" alt=""></figure>
+      </div>
+      <div class="big-emoji" id="askEmoji">💖</div>
+      <h1 id="askTitle">Lianne, wil je mijn vriendinnetje zijn?</h1>
+      <p id="askSub">&nbsp;</p>
+      <div class="answer-row">
+        <button id="yesBtn">Ja! 💕</button>
+        <button id="noBtn">Nee</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="yes">
+    <div class="card">
+      <div class="big-emoji heartbeat">💞</div>
+      <h1>JAAAA!!!</h1>
+      <p id="yesText">Ik wist het. Je hebt me net heel erg blij gemaakt.</p>
+      <div class="collage">
+        <figure class="polaroid"><img src="img/wandeling.jpg" alt=""></figure>
+        <figure class="polaroid"><img src="img/thuis.jpg" alt=""></figure>
+        <figure class="polaroid"><img src="img/picknick.jpg" alt=""></figure>
+      </div>
+      <p>Officieel vriendje en vriendinnetje vanaf vandaag:<br><strong id="today" style="color:var(--ink)"></strong></p>
+      <div class="signature">Kus, Ollie <span class="heartbeat">❤️</span></div>
+      <div style="margin-top:16px"><button class="btn-option" id="moreConfetti">Meer confetti! 🎉</button></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const screens = [...document.querySelectorAll('.screen')];
+  let current = 0;
+
+  function show(index) {
+    screens[current].classList.remove('active');
+    current = index;
+    screens[current].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  const next = () => show(current + 1);
+
+  document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
+
+  // Multiple-choice questions: show a cute reaction, then move on.
+  document.querySelectorAll('.screen').forEach(screen => {
+    const opts = screen.querySelectorAll('[data-react]');
+    if (!opts.length) return;
+    const reaction = screen.querySelector('.reaction');
+    opts.forEach(btn => btn.addEventListener('click', () => {
+      opts.forEach(o => o.disabled = true);
+      btn.style.background = 'var(--pink)';
+      btn.style.color = '#fff';
+      reaction.textContent = btn.dataset.react;
+      burstHearts(btn);
+      setTimeout(() => {
+        opts.forEach(o => { o.disabled = false; o.style.background = ''; o.style.color = ''; });
+        reaction.textContent = '';
+        next();
+      }, 1500);
+    }));
+  });
+
+  // Slider: anything below 70 "gets fixed".
+  const slider = document.getElementById('funnySlider');
+  const sliderValue = document.getElementById('sliderValue');
+  const sliderReaction = document.getElementById('sliderReaction');
+  let sliderFixes = 0;
+  const lines = [
+    'Hmm, die slider is kapot. Ik zet hem even goed 🔧',
+    'Huh, weer kapot?! Gek hoor 🤔',
+    'Deze slider weet wel beter 😌',
+  ];
+  function updateSlider() {
+    sliderValue.textContent = slider.value + '%';
+    if (+slider.value >= 90) sliderReaction.textContent = 'Klopt helemaal 🤣';
+    else if (+slider.value >= 70) sliderReaction.textContent = 'Kan nog iets hoger hoor...';
+    else sliderReaction.textContent = '';
+  }
+  slider.addEventListener('input', updateSlider);
+  slider.addEventListener('change', () => {
+    if (+slider.value < 70) {
+      sliderReaction.textContent = lines[Math.min(sliderFixes, lines.length - 1)];
+      sliderFixes++;
+      animateSliderTo(100);
+    }
+  });
+  function animateSliderTo(target) {
+    const start = +slider.value;
+    const t0 = performance.now();
+    const step = now => {
+      const p = Math.min(1, (now - t0) / 700);
+      slider.value = Math.round(start + (target - start) * p);
+      sliderValue.textContent = slider.value + '%';
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  document.getElementById('sliderNext').addEventListener('click', () => {
+    if (+slider.value < 70) {
+      sliderReaction.textContent = 'Eerst eerlijk invullen 😏';
+      animateSliderTo(100);
+      return;
+    }
+    next();
+  });
+
+  // The big question.
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const askTitle = document.getElementById('askTitle');
+  const askSub = document.getElementById('askSub');
+  const askEmoji = document.getElementById('askEmoji');
+  const askCard = document.getElementById('askCard');
+
+  const stages = [
+    { emoji: '🥺', title: 'Weet je het zeker?', sub: 'Denk er nog even goed over na...', no: 'Ja, zeker' },
+    { emoji: '😳', title: 'Echt heel heel zeker?', sub: 'Ik vraag het nog één keertje.', no: 'Echt zeker' },
+    { emoji: '🍟', title: 'Denk aan de patatjes in de zon...', sub: 'En de wandelingen. En mijn grapjes.', no: 'Nog steeds nee' },
+    { emoji: '🥹', title: 'Ik heb deze hele website voor je gemaakt!', sub: 'Met foto\'s en alles.', no: 'Nee...' },
+    { emoji: '😢', title: 'Laatste kans. Echt waar.', sub: 'Mijn hart breekt een klein beetje.', no: 'Nee?' },
+    { emoji: '😏', title: 'Oké. Probeer die knop maar eens te vangen.', sub: 'Succes ermee 😇', no: 'Nee' },
+  ];
+  const dodgeLines = ['Haha, mis!', 'Bijna!', 'Te langzaam 😜', 'Nope!', 'Hier ben ik!', 'Nog een keer?', 'Zeg gewoon ja', 'Hihi 🙈'];
+  let noCount = 0;
+  let runaway = false;
+  let dodges = 0;
+  let yesScale = 1;
+
+  function growYes() {
+    yesScale = Math.min(yesScale + 0.22, 2.4);
+    yesBtn.style.fontSize = (18 * yesScale) + 'px';
+    yesBtn.style.padding = (14 * yesScale) + 'px ' + (24 * yesScale) + 'px';
+  }
+
+  noBtn.addEventListener('click', e => {
+    if (noBtn.dataset.converted) return;
+    if (runaway) { e.preventDefault(); dodge(); return; }
+    const s = stages[Math.min(noCount, stages.length - 1)];
+    askEmoji.textContent = s.emoji;
+    askTitle.textContent = s.title;
+    askSub.textContent = s.sub;
+    noBtn.textContent = s.no;
+    askCard.classList.remove('shake'); void askCard.offsetWidth; askCard.classList.add('shake');
+    growYes();
+    noBtn.style.fontSize = Math.max(13, 18 - noCount) + 'px';
+    noCount++;
+    if (noCount >= stages.length) startRunaway();
+  });
+
+  function startRunaway() {
+    runaway = true;
+    const r = noBtn.getBoundingClientRect();
+    noBtn.classList.add('runaway');
+    noBtn.style.left = r.left + 'px';
+    noBtn.style.top = r.top + 'px';
+  }
+
+  function dodge(fromX, fromY) {
+    if (!runaway) return;
+    dodges++;
+    const r = noBtn.getBoundingClientRect();
+    const w = r.width, h = r.height, pad = 16;
+    const maxX = window.innerWidth - w - pad;
+    const maxY = window.innerHeight - h - pad;
+    const yr = yesBtn.getBoundingClientRect();
+    let x, y, tries = 0;
+    do {
+      x = pad + Math.random() * Math.max(1, maxX - pad);
+      y = pad + Math.random() * Math.max(1, maxY - pad);
+      tries++;
+      const farFromPointer = fromX == null || Math.hypot(x + w / 2 - fromX, y + h / 2 - fromY) > 180;
+      const notOnYes = x + w < yr.left - 10 || x > yr.right + 10 || y + h < yr.top - 10 || y > yr.bottom + 10;
+      if (farFromPointer && notOnYes) break;
+    } while (tries < 40);
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+    noBtn.textContent = dodgeLines[dodges % dodgeLines.length];
+    if (dodges % 3 === 0) growYes();
+    if (dodges === 12) {
+      askTitle.textContent = 'Ik zie dat je het echt probeert...';
+      askSub.textContent = 'Maar deze knop doet het gewoon niet meer 🤷';
+    }
+    if (dodges >= 18) {
+      // Give up: the no button turns into a second yes button.
+      runaway = false;
+      noBtn.classList.remove('runaway');
+      noBtn.style.left = noBtn.style.top = '';
+      noBtn.dataset.converted = '1';
+      noBtn.textContent = 'Ja! 💕';
+      noBtn.style.background = 'var(--pink)';
+      noBtn.style.color = '#fff';
+      noBtn.style.fontSize = '18px';
+      noBtn.addEventListener('click', sayYes);
+      askTitle.textContent = 'Kijk, nu zijn het allebei ja-knoppen 😇';
+      askSub.textContent = 'Kies maar!';
+      askEmoji.textContent = '💖';
+    }
+  }
+
+  // Run away when the mouse gets close.
+  document.addEventListener('mousemove', e => {
+    if (!runaway) return;
+    const r = noBtn.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    if (Math.hypot(e.clientX - cx, e.clientY - cy) < Math.max(r.width, r.height) / 2 + 60) dodge(e.clientX, e.clientY);
+  });
+  // On phones: jump away as soon as a finger touches it.
+  noBtn.addEventListener('touchstart', e => {
+    if (!runaway) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    dodge(t.clientX, t.clientY);
+  }, { passive: false });
+  window.addEventListener('resize', () => { if (runaway) dodge(); });
+
+  function sayYes() {
+    runaway = false;
+    noBtn.classList.remove('runaway');
+    const tries = noCount + dodges;
+    document.getElementById('today').textContent = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (noCount >= stages.length) document.getElementById('yesText').textContent = 'Na ' + tries + ' keer nee proberen... toch ja! Ik wist het 😎';
+    else if (noCount > 0) document.getElementById('yesText').textContent = 'Even twijfelen mag. Je maakt me heel erg blij.';
+    show(screens.findIndex(s => s.dataset.screen === 'yes'));
+    confetti(260);
+    setTimeout(() => confetti(160), 900);
+    heartRain = 3000;
+  }
+  yesBtn.addEventListener('click', sayYes);
+  document.getElementById('moreConfetti').addEventListener('click', () => confetti(220));
+
+  // Floating hearts background.
+  const heartsEl = document.getElementById('hearts');
+  const heartChars = ['💗', '💕', '💖', '❤️', '🌸', '💞'];
+  let heartRain = 0;
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'float-heart';
+    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (14 + Math.random() * 22) + 'px';
+    const dur = 7 + Math.random() * 7;
+    h.style.animationDuration = dur + 's';
+    heartsEl.appendChild(h);
+    setTimeout(() => h.remove(), dur * 1000);
+  }
+  setInterval(() => {
+    spawnHeart();
+    if (heartRain > 0) { spawnHeart(); spawnHeart(); heartRain -= 600; }
+  }, 600);
+  for (let i = 0; i < 6; i++) setTimeout(spawnHeart, i * 300);
+
+  function burstHearts(el) {
+    const r = el.getBoundingClientRect();
+    for (let i = 0; i < 10; i++) {
+      const h = document.createElement('div');
+      h.textContent = '💖';
+      h.style.cssText = `position:fixed;left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px;font-size:18px;pointer-events:none;z-index:40;transition:transform .9s ease-out,opacity .9s;`;
+      document.body.appendChild(h);
+      const a = Math.random() * Math.PI * 2, dist = 50 + Math.random() * 70;
+      requestAnimationFrame(() => {
+        h.style.transform = `translate(${Math.cos(a) * dist}px, ${Math.sin(a) * dist - 30}px) scale(${.6 + Math.random()})`;
+        h.style.opacity = '0';
+      });
+      setTimeout(() => h.remove(), 950);
+    }
+  }
+
+  // Confetti.
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let pieces = [];
+  let animating = false;
+  function resize() { canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+  resize(); addEventListener('resize', resize);
+  const colors = ['#ff5c8a', '#ffb3c8', '#ffd166', '#ff8fab', '#c77dff', '#ffffff', '#ff4d6d'];
+  function confetti(n) {
+    for (let i = 0; i < n; i++) {
+      pieces.push({
+        x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .45,
+        vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4,
+        size: 6 + Math.random() * 7, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .3,
+        color: colors[Math.floor(Math.random() * colors.length)], heart: Math.random() < .25, life: 0,
+      });
+    }
+    if (!animating) { animating = true; requestAnimationFrame(tick); }
+  }
+  function tick() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    pieces.forEach(p => {
+      p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      if (p.heart) { ctx.font = (p.size * 2) + 'px serif'; ctx.fillText('💖', 0, 0); }
+      else { ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); }
+      ctx.restore();
+    });
+    pieces = pieces.filter(p => p.y < innerHeight + 40 && p.life < 400);
+    if (pieces.length) requestAnimationFrame(tick);
+    else { animating = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+})();
+</script>
+</body>
+</html>
