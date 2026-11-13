@@ -84,6 +84,8 @@
   .btn-option { background: var(--rose); color: var(--ink); }
   .btn-option:hover { background: #ffd0df; transform: translateY(-2px); }
 
+  .btn-back { display: block; background: none; color: var(--muted); font-size: 16px; font-weight: 500; padding: 4px 8px; margin: -10px 0 6px -6px; }
+  .btn-back:hover { color: var(--pink-dark); }
   .reaction { min-height: 28px; margin-top: 14px; font-family: "Caveat", cursive; font-size: 28px; color: var(--pink-dark); }
 
   .slider-wrap { margin: 10px 4px 6px; }
@@ -157,9 +159,9 @@
         <figcaption>picknick in de tuin ☀️</figcaption>
       </figure>
       <div class="options">
-        <button class="btn-option" data-react="Goed antwoord. Ik haal de mayo 🍟">Patatjes in de zon 🍟</button>
-        <button class="btn-option" data-react="Gezond hoor. Ik respecteer het 🥒">Komkommer 🥒</button>
-        <button class="btn-option" data-react="Oké nu ga ik blozen ☺️">Alles, als jij erbij bent</button>
+        <button class="btn-option" data-react="Echt een druif 🍇">Alles wat lekker is, maar dan de minder lekker versie (zoals 92% pure chocolade 🤢)</button>
+        <button class="btn-option" data-react="Goeie keuze 🫘">Bonen met rijst</button>
+        <button class="btn-option" data-react="Oké nu ga ik blozen ☺️">Alles zolang jij erbij bent</button>
       </div>
       <div class="reaction"></div>
     </div>
@@ -177,7 +179,7 @@
       <div class="options">
         <button class="btn-option" data-react="Leuk is een begin 😌">Leuk</button>
         <button class="btn-option" data-react="Heel leuk! Ik noteer het 📝">Heel leuk</button>
-        <button class="btn-option" data-react="Wist ik het toch 😎">Het allerleukste van de hele week</button>
+        <button class="btn-option" data-react="OMG ik ook">Het allerleukste van de hele week</button>
       </div>
       <div class="reaction"></div>
     </div>
@@ -249,7 +251,12 @@
   const screens = [...document.querySelectorAll('.screen')];
   let current = 0;
 
+  let pendingNext = null;
   function show(index) {
+    clearTimeout(pendingNext);
+    const askIndex = screens.findIndex(s => s.dataset.screen === 'ask');
+    if (current === askIndex || index === askIndex) resetAsk();
+    screens[current].dispatchEvent(new Event('reset'));
     screens[current].classList.remove('active');
     current = index;
     screens[current].classList.add('active');
@@ -258,6 +265,15 @@
   const next = () => show(current + 1);
 
   document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
+
+  // A "Vorige" button on every screen after the intro, so she can try other answers.
+  screens.slice(1).forEach(screen => {
+    const back = document.createElement('button');
+    back.className = 'btn-back';
+    back.textContent = '← Vorige';
+    back.addEventListener('click', () => show(current - 1));
+    screen.querySelector('.card').prepend(back);
+  });
 
   // Multiple-choice questions: show a cute reaction, then move on.
   document.querySelectorAll('.screen').forEach(screen => {
@@ -270,12 +286,13 @@
       btn.style.color = '#fff';
       reaction.textContent = btn.dataset.react;
       burstHearts(btn);
-      setTimeout(() => {
-        opts.forEach(o => { o.disabled = false; o.style.background = ''; o.style.color = ''; });
-        reaction.textContent = '';
-        next();
-      }, 1500);
+      pendingNext = setTimeout(() => { reset(); next(); }, 1500);
     }));
+    function reset() {
+      opts.forEach(o => { o.disabled = false; o.style.background = ''; o.style.color = ''; });
+      reaction.textContent = '';
+    }
+    screen.addEventListener('reset', reset);
   });
 
   // Slider: anything below 70 "gets fixed".
@@ -438,12 +455,27 @@
     document.getElementById('today').textContent = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
     if (noCount >= stages.length) document.getElementById('yesText').textContent = 'Na ' + tries + ' keer nee proberen... toch ja! Ik wist het 😎';
     else if (noCount > 0) document.getElementById('yesText').textContent = 'Even twijfelen mag. Je maakt me heel erg blij.';
+    else document.getElementById('yesText').textContent = 'Ik wist het. Je hebt me net heel erg blij gemaakt.';
     show(screens.findIndex(s => s.dataset.screen === 'yes'));
     confetti(260);
     setTimeout(() => confetti(160), 900);
     heartRain = 3000;
   }
   yesBtn.addEventListener('click', sayYes);
+
+  // Put the big question back to how it started (used when she goes back and forth).
+  function resetAsk() {
+    noCount = 0; dodges = 0; yesScale = 1; runaway = false;
+    noBtn.classList.remove('runaway');
+    noBtn.removeAttribute('style');
+    delete noBtn.dataset.converted;
+    noBtn.removeEventListener('click', sayYes);
+    noBtn.textContent = 'Nee';
+    yesBtn.removeAttribute('style');
+    askTitle.textContent = 'Lianne, wil je mijn vriendinnetje zijn?';
+    askSub.innerHTML = '&nbsp;';
+    askEmoji.textContent = '💖';
+  }
   document.getElementById('moreConfetti').addEventListener('click', () => confetti(220));
 
   // Floating hearts background.
